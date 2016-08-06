@@ -1,6 +1,5 @@
 package com.bam.funfacts;
 
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,13 +7,17 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.Random;
-
 public class FunFactsActivity extends AppCompatActivity {
+
+    private static final String KEY_FACT = "KEY_FACT";
+    private static final String KEY_COLOR = "KEY_COLOR";
 
     private TextView mFactTextView;
     private Button mNewFactButton;
     private RelativeLayout mRelativeLayout;
+
+    private String mFact = FactBook.getFact();
+    private int mColor = ColorWheel.getColor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +31,32 @@ public class FunFactsActivity extends AppCompatActivity {
         mNewFactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFactTextView.setText(FactBook.getFact());
+                mFact = FactBook.getFact();
+                mFactTextView.setText(mFact);
 
-                int color = ColorWheel.getColor();
-                mRelativeLayout.setBackgroundColor(color);
-                mNewFactButton.setTextColor(color);
+                mColor = ColorWheel.getColor();
+                mRelativeLayout.setBackgroundColor(mColor);
+                mNewFactButton.setTextColor(mColor);
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(KEY_FACT, mFact);
+        outState.putInt(KEY_COLOR, mColor);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        mFact = savedInstanceState.getString(KEY_FACT);
+        mFactTextView.setText(mFact);
+        mColor = savedInstanceState.getInt(KEY_COLOR);
+        mRelativeLayout.setBackgroundColor(mColor);
+        mNewFactButton.setTextColor(mColor);
     }
 }
